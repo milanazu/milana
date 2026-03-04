@@ -1,29 +1,114 @@
+import pygame
+import random
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Milana's Favorite Dish</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            text-align: center;
-            padding: 50px;
-        }
-        h1 {
-            color: #333;
-        }
-        p {
-            color: #555;
-            font-size: 18px;
-        }
-    </style>
-</head>
-<body>
-    <h1>Hi, I'm Milana!</h1>
-    <p>I love teriyaki chicken rice bowl!</p>
-</body>
-</html>
-```
+# Initialize
+pygame.init()
+
+# Screen settings
+WIDTH, HEIGHT = 800, 600
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Rabbit Egg Catcher")
+
+clock = pygame.time.Clock()
+
+# Load images
+rabbit_img = pygame.image.load("rabbit.png")
+egg_img = pygame.image.load("egg.png")
+
+rabbit_rect = rabbit_img.get_rect()
+rabbit_rect.midbottom = (WIDTH // 2, HEIGHT - 20)
+
+# Dropper (invisible object that moves randomly)
+dropper_x = WIDTH // 2
+dropper_speed = 4
+dropper_direction = 1
+
+# Egg settings
+eggs = []
+fall_speed = 5
+spawn_delay = 1000  # milliseconds
+last_spawn = pygame.time.get_ticks()
+
+# Score and lives
+score = 0
+lives = 5
+
+font = pygame.font.SysFont(None, 40)
+
+running = True
+while running:
+    clock.tick(60)
+    screen.fill((240, 240, 255))
+
+    # -------- Events --------
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    # -------- Rabbit Movement --------
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_LEFT] and rabbit_rect.left > 0:
+        rabbit_rect.x -= 7
+    if keys[pygame.K_RIGHT] and rabbit_rect.right < WIDTH:
+        rabbit_rect.x += 7
+
+    # -------- Random Dropper Movement --------
+    dropper_x += dropper_speed * dropper_direction
+
+    # Change direction randomly
+    if random.randint(1, 100) < 3:
+        dropper_direction *= -1
+
+    # Bounce at screen edges
+    if dropper_x <= 0 or dropper_x >= WIDTH - 40:
+        dropper_direction *= -1
+
+    # -------- Spawn Eggs --------
+    current_time = pygame.time.get_ticks()
+    if current_time - last_spawn > spawn_delay:
+        egg_rect = egg_img.get_rect(midtop=(dropper_x, 0))
+        eggs.append(egg_rect)
+        last_spawn = current_time
+
+    # -------- Move Eggs --------
+    for egg in eggs[:]:
+        egg.y += fall_speed
+
+        # Collision
+        if egg.colliderect(rabbit_rect):
+            eggs.remove(egg)
+            score += 1
+
+            # Increase difficulty
+            if score % 5 == 0:
+                fall_speed += 1
+                dropper_speed += 0.5
+
+        # Missed egg
+        elif egg.top > HEIGHT:
+            eggs.remove(egg)
+            lives -= 1
+
+    # -------- Draw Everything --------
+    screen.blit(rabbit_img, rabbit_rect)
+
+    for egg in eggs:
+        screen.blit(egg_img, egg)
+
+    score_text = font.render(f"Score: {score}", True, (0, 0, 0))
+    lives_text = font.render(f"Lives: {lives}", True, (200, 0, 0))
+
+    screen.blit(score_text, (10, 10))
+    screen.blit(lives_text, (10, 50))
+
+    # -------- Game Over --------
+    if lives <= 0:
+        game_over = font.render("GAME OVER", True, (255, 0, 0))
+        screen.blit(game_over, (WIDTH // 2 - 120, HEIGHT // 2))
+        pygame.display.flip()
+        pygame.time.delay(3000)
+        running = False
+
+    pygame.display.flip()
+
+pygame.quit()
