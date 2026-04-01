@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>Hostivařský lesopark - PDF Projekt</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+            text-align: center;
+        }
+
+        h1 {
+            color: #1a4a7a;
+        }
+
+        a.btn, a.back-btn {
+            display: inline-block;
+            margin: 15px 10px;
+            padding: 15px 35px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: all 0.2s;
+        }
+
+        a.btn {
+            background-color: #ff9800;
+            border: 3px solid white;
+        }
+
+        a.btn:hover {
+            background-color: #ffab2e;
+        }
+
+        a.back-btn {
+            background-color: #d32f2f;
+            border: 3px solid white;
+        }
+
+        a.back-btn:hover {
+            background-color: #e55c5c;
+        }
+
+        iframe {
+            border: 5px solid #1a4a7a;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Hostivařský lesopark</h1>
+
+    <!-- Odkaz na web související s místem -->
+    <p>
+        <a href="https://www.kamsevydat.cz/lesopark-hostivar/" target="_blank" class="btn">
+            Více informací o Lesoparku Hostivař
+        </a>
+    </p>
+
+    <!-- Vložení PDF -->
+    <iframe src="hostivar-lesopark.pdf" width="100%" height="600px"></iframe>
+
+    <!-- Tlačítko zpět na domovskou stránku -->
+    <p>
+        <a href="index.html" class="back-btn">← Zpět na domovskou stránku</a>
+    </p>
+
+</body>
+</html>
